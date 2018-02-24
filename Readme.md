@@ -1,3 +1,5 @@
-# LoadForms V0.00
+# FormsBuilder V0.00
 
-Module to load forms from a PSD Definition files, properties of controls are the same as Windows forms properties names.
+PowerShell module to dynamicly build and load a Windows Form from a PSD Definition files.
+
+Properties and controls naming are the same as windows.forms definition.
