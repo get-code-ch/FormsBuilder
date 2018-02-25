@@ -15,68 +15,34 @@ function New-Form () {
     Import-LocalizedData -BaseDirectory (Split-Path $FormsFile) -FileName (Split-Path $FormsFile -Leaf) -BindingVariable 'FormDef'
 
     $WinForms = New-Object System.Windows.Forms.Form 
-    
-    $WinForms.AutoSize = $False 
-    $WinForms.Text = $FormDef.Text
-    $WinForms.Name = $FormDef.Name
-    $WinForms.Anchor = $FormDef.Anchor
-    
-    $WinForms.Width = $FormDef.Width
-    $WinForms.Height = $FormDef.Height
-    $WinForms.Add_Load( { FormLoad | Out-Null })
-    
-    foreach ($control in $FormDef.Controls) {
-        $c = New-Object System.Windows.Forms.$($control.Control)
-        foreach ($p in $control.Properties) {
-            foreach ($k in $p.Keys) {
-                $c.$k = $p.$k
-            }
-        
-            if ($control.Control -eq 'Button') {
-                if ($control.ContainsKey('Action')) {
-                    $fct = [Scriptblock]::Create($control.Action)
-                }
-                else {
-                    $fct = [Scriptblock]::Create("$($control.Properties.Name)_Click")
-    
-                }
-                $c.add_click( $fct )
-            }
-    
-            if ($control.Control -eq 'TextBox') {
-                if ($control.ContainsKey('Action')) {
-                    $fct = [Scriptblock]::Create($control.Action)
-                }
-                else {
-                    $fct = [Scriptblock]::Create("$($control.Properties.Name)_OnChange | Out-Null")
-    
-                }
-                $c.add_textChanged( $fct )
-            }
+    foreach ($k in $FormDef.Form.Properties.Keys) {
+        $WinForms.$k = $FormDef.Form.Properties.$k
+    }
 
-            if ($control.Control -eq 'DataGridView') {
-                $fct = [Scriptblock]::Create("$($control.Properties.Name)_CellDoubleClick")
-                $c.add_CellDoubleClick( $fct )
-                $fct = [Scriptblock]::Create("$($control.Properties.Name)_CellClick")
-                $c.add_CellClick( $fct )
-            }
-<#
-            if ($control.Control -eq 'DataGridView') {
-                if ($control.ContainsKey('Action')) {
-                    $fct = [Scriptblock]::Create($control.Action)
-                }
-                else {
-                    $fct = [Scriptblock]::Create("$($control.Properties.Name)CellDoubleClick")
-                }
-                $c.add_CellDoubleClick( $fct )
-            }
-#>
-            $WinForms.Controls.Add($c)
+    foreach ($k in $FormDef.Form.Events.Keys) {
+        $evt = "Add_$($k)"
+        $fct = [Scriptblock]::Create($($FormDef.Form.Events.$k))
+        $WinForms.$evt($fct) 
+    }
+
+    foreach ($control in $FormDef.Controls) {
+        $evt = $null
+        $fct = $null
+        $c = New-Object System.Windows.Forms.$($control.Control)
+
+        foreach ($k in $control.Properties.Keys) {
+            $c.$k = $control.Properties.$k
         }
+
+        foreach ($k in $control.Events.Keys) {
+            $evt = "Add_$($k)"
+            $fct = [Scriptblock]::Create($($control.Events.$k))
+            $c.$evt($fct) 
+        }
+        $WinForms.Controls.Add($c)
     }
     
     return $WinForms
-
 }
 
 Export-ModuleMember -Function *
