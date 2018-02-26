@@ -1,7 +1,7 @@
 <#
     Sample form definition for example1.ps1 script
 
-    Controls informations can be found on official Microsoft site --> https://msdn.microsoft.com/fr-fr/library/system.windows.forms.form(v=vs.110).aspx
+    Controls informations can be found on official Microsoft site --> https://msdn.microsoft.com/fr-fr/library/system.windows.forms.control(v=vs.110).aspx
 #>
 @{
     # DialogForm Definition
@@ -87,7 +87,28 @@
                 CellClick = 'DataGridView1_CellClick'
                 CellDoubleClick = 'DataGridView1_CellDoubleClick'
             }
-        }
+        },
+        @{
+            Control             = "DateTimePicker"
+            Properties          = @{
+                Name            = 'DateTiemPicker1'
+                Top             = 70
+                Left            = 120
+                Width           = 170
+            }
+            Events     = @{
+                ValueChanged     = 'DateTimePicker1_ValueChanged'
+            }
+        },
+        @{
+            Control             = "Label"
+            Properties          = @{
+                Name            = 'LabelDate1'
+                Top             = 90
+                Left            = 120
+                Width           = 170
+            }
+        },
         # Form Quit Button
         @{
             Control    = "Button"

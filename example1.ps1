@@ -22,6 +22,12 @@ Function TextBox1_OnChange(){
     }
 }
 
+function DateTimePicker1_ValueChanged () {
+    $SelectedDate = $this.Value.ToString("dd-MMM-yyyy")
+    $OutDatePickerControl = $MainForm.Controls['LabelDate1']
+    $OutDatePickerControl.Text = $selectedDate
+}
+
 Function QuitBtn_Click() {
     $MainForm.Close()
 }
