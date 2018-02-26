@@ -16,13 +16,23 @@ function New-Form () {
 
     $WinForms = New-Object System.Windows.Forms.Form 
     foreach ($k in $FormDef.Form.Properties.Keys) {
-        $WinForms.$k = $FormDef.Form.Properties.$k
+        if ($WinForms.PSobject.Properties.Name -match $k) {
+            $WinForms.$k = $FormDef.Form.Properties.$k
+        } else {
+            Write-Error -Message "Error: Property $k not exist in windows.form.forms control"
+            exit
+        }
     }
 
     foreach ($k in $FormDef.Form.Events.Keys) {
         $evt = "Add_$($k)"
-        $fct = [Scriptblock]::Create($($FormDef.Form.Events.$k))
-        $WinForms.$evt($fct) 
+        if ($WinForms.PSobject.Methods.Name -match $evt) {
+            $fct = [Scriptblock]::Create($($FormDef.Form.Events.$k))
+            $WinForms.$evt($fct) 
+        } else {
+            Write-Error -Message "Error: Event $k not exist for windows.form.forms control"
+            exit
+        }
     }
 
     foreach ($control in $FormDef.Controls) {
@@ -32,12 +42,29 @@ function New-Form () {
 
         foreach ($k in $control.Properties.Keys) {
             $c.$k = $control.Properties.$k
+<#
+            if ($c.PSObject.Properties.Name -match $k) {
+                $c.$k = $control.Properties.$k
+            } else {
+                Write-Error -Message "Error: $($control.Properties.Name) Property $k not exist for $c control"
+                exit
+            }
+#>
         }
 
         foreach ($k in $control.Events.Keys) {
             $evt = "Add_$($k)"
             $fct = [Scriptblock]::Create($($control.Events.$k))
             $c.$evt($fct) 
+<#
+            if ($c.PSObject.Methods.Name -match $evt) {
+                $fct = [Scriptblock]::Create($($control.Events.$k))
+                $c.$evt($fct) 
+            } else {
+                Write-Error -Message "Error: $($control.Properties.Name) Event $k not exist for $c control"
+                exit
+            }
+#>
         }
         $WinForms.Controls.Add($c)
     }

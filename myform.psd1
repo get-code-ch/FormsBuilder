@@ -30,6 +30,7 @@
                 Top   = 7
                 Left  = 5
                 Width = 60
+                xsfdiusef = 'www'
             }
         },
         @{
@@ -43,6 +44,7 @@
             # Hanling event when text is changed
             Events     = @{
                 TextChanged = 'TextBox1_OnChange'    
+                xsfdiusef = 'www'
             }
         },
         @{
