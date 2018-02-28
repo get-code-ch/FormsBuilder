@@ -79,23 +79,27 @@
                 Top                  = 70
                 Left                 = 5
                 Height               = 200
-                Width                = 100
-                ColumnHeadersVisible = $false
+                Width                = 375
+                ColumnHeadersVisible = $True
                 RowHeadersVisible    = $false
                 SelectionMode        = 'FullRowSelect'
                 MultiSelect          = $false
+                ReadOnly             = $True
+                
             }
+            <#
             Events     = @{
                 CellClick = 'DataGridView1_CellClick'
                 CellDoubleClick = 'DataGridView1_CellDoubleClick'
             }
+            #>
         },
         @{
             Control             = "DateTimePicker"
             Properties          = @{
                 Name            = 'DateTiemPicker1'
-                Top             = 70
-                Left            = 120
+                Top             = 280
+                Left            = 5
                 Width           = 170
             }
             Events     = @{
@@ -106,9 +110,9 @@
             Control             = "Label"
             Properties          = @{
                 Name            = 'LabelDate1'
-                Top             = 90
-                Left            = 120
-                Width           = 170
+                Top             = 280
+                Left            = 185
+                Width           = 120
             }
         },
         # Form Quit Button
@@ -117,9 +121,10 @@
             Properties = @{
                 Text  = 'Quit'
                 Name  = 'QuitBtn'
-                Top   = 300
+                Top   = 315
                 Left  = 170
                 Width = 60
+                Height = 25
             }
             Events     = @{
                 Click = 'QuitBtn_Click'    

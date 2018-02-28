@@ -3,7 +3,8 @@
     Chargement de la boite de Dialogue
 #>
 Function Form_Load() {
-    Write-Output 'Form loaded...'
+    $dgv = $MainForm.Controls['DataGridView1']
+    $dgv.DataSource = $demoArray
 }
 
 # DataGridView1 event handling
@@ -32,11 +33,21 @@ Function QuitBtn_Click() {
     $MainForm.Close()
 }
 
+Function New-People($Name, $LastName) {
+    $returnObject = New-Object psobject @{
+        Name = $Name
+        LastName = $LastName
+    }
+    return $returnObject
+}
+
 Import-Module ".\FormsBuilder" -Force
 
 Clear-Host
 $FormsFile = ".\demo1Form.psd1"
-
+$demoArray = New-Object System.Collections.ArrayList 
+$demoArray.AddRange((get-psdrive | Select-Object Name, Provider, root)) | Out-Null
 # Loading form and display Dialog
+
 $MainForm = New-Form -FormsFile $FormsFile
 $MainForm.ShowDialog()
