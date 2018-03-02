@@ -1,53 +1,70 @@
 <#
 .SYNOPSIS
-    Chargement de la boite de Dialogue
+    Powershell script for demonstration of usage of FormsBuilder module
+
+.DESCRIPTION
+    This script demonstrate usage if FormsBuilder module
+
+.NOTES
+    Author  : Claude Débieux - claude@get-code.ch
+    More information and working demo on GitHub
+
+.LINK
+    https://get-code.ch
+    https://github.com/get-code-ch/FormsBuilder
 #>
+
+
+### Following functions handling event on $MainForm.Form ###
+# This function is called when forms is loaded (after $MainForm.Form.ShowDialog())
 Function Form_Load() {
-    $dgv = $MainForm.Controls['DataGridView1']
-    $dgv.DataSource = $demoArray
+    # Set source of DataGridView
+    # This object can also accessed directly from the form
+    # $MainForm.Form.Controls["DataGridView1"].DataSource is synonym 
+    # to $MainForm.Controls.DataGridView1.DataSource
+    $MainForm.Controls.DataGridView1.DataSource = $demoArray
+
+    # Change de fore coler of Label3
+    $MainForm.Controls.Label3.ForeColor = 'Blue'
 }
 
 # DataGridView1 event handling
 Function DataGridView1_CellClick() {
+    # For the demo, when we make a simple click on one row of DataGridView1 we clear content of TextBox1
+    $MainForm.Controls.TextBox1.Text = ''
 }
-Function DataGridView1_CellDoubleClick() {}
+Function DataGridView1_CellDoubleClick() {
+    # For the demo, when we make a double click on one row of DataGridView1 we set the content of TextBox1 with name cell of the rows
+        $MainForm.Controls.TextBox1.Text = $this.CurrentRow.Cells["Name"].Value
+}
 
 # Textbox change event handling
 Function TextBox1_OnChange(){
-    $changedText = $this.Text
-    $OutTextControl = $MainForm.Controls['Label3']
-    if (!$changedText -eq '') {
-        $OutTextControl.Text = $this.Text
+    if (!$this.Text -eq '') {
+        $MainForm.Controls.Label3.Text = $this.Text
     } else {
-        $OutTextControl.Text = '<Text>'
+        $MainForm.Controls.Label3.Text = '<Text>'
     }
 }
 
 function DateTimePicker1_ValueChanged () {
-    $SelectedDate = $this.Value.ToString("dd-MMM-yyyy")
-    $OutDatePickerControl = $MainForm.Controls['LabelDate1']
-    $OutDatePickerControl.Text = $selectedDate
+    $MainForm.Controls.LabelDate1.Text = $this.Value.ToString("dd-MMM-yyyy")
 }
 
 Function QuitBtn_Click() {
-    $MainForm.Close()
+    # When Quit button is click we close the form
+    $MainForm.Form.Close()
 }
 
-Function New-People($Name, $LastName) {
-    $returnObject = New-Object psobject @{
-        Name = $Name
-        LastName = $LastName
-    }
-    return $returnObject
-}
-
+### Begin of script ###
 Import-Module ".\FormsBuilder" -Force
 
 Clear-Host
 $FormsFile = ".\demo1Form.psd1"
+
+# For the demo we load an array with list of psdrive
 $demoArray = New-Object System.Collections.ArrayList 
 $demoArray.AddRange((get-psdrive | Select-Object Name, Provider, root)) | Out-Null
-# Loading form and display Dialog
 
-$MainForm = New-Form -FormsFile $FormsFile
-$MainForm.ShowDialog()
+$MainForm = New-Form($FormsFile)
+$MainForm.Form.ShowDialog()

@@ -1,8 +1,19 @@
 <#
+.SYNOPSIS
     Sample form definition for demo1.ps1 script
 
-    Controls informations can be found on official Microsoft site --> https://msdn.microsoft.com/fr-fr/library/system.windows.forms.control(v=vs.110).aspx
+.DESCRIPTION
+    This file contains form definition properties and events are loaded with new-form function in module FormsBuild
+
+.NOTES
+    Author  : Claude Débieux - claude@get-code.ch
+    More information and working demo on GitHub
+
+.LINK
+    https://get-code.ch
+    https://github.com/get-code-ch/FormsBuilder
 #>
+
 @{
     # DialogForm Definition
     Form     = @{
@@ -87,12 +98,10 @@
                 ReadOnly             = $True
                 
             }
-            <#
             Events     = @{
                 CellClick = 'DataGridView1_CellClick'
                 CellDoubleClick = 'DataGridView1_CellDoubleClick'
             }
-            #>
         },
         @{
             Control             = "DateTimePicker"
@@ -131,5 +140,4 @@
             }
         } 
     )
-
 }
